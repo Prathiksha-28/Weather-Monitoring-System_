@@ -1,0 +1,24 @@
+OpenWeatherMap API
+- API Documentation: OpenWeatherMap API Documentation
+
+- API Endpoint for Current Weather Data:
+https://api.openweathermap.org/data/2.5/weather
+
+- Required Query Parameters:
+q: City name (e.g., "Delhi").
+appid: Your unique API key.
+units: Specify "metric" for temperature in Celsius (or "imperial" for Fahrenheit).
+
+Response Structure
+The API responds with a JSON object that includes various weather parameters. Key parameters for this assignment include:
+
+Weather Condition:
+weather: An array containing weather condition objects.
+main: Main weather condition (e.g., "Rain", "Clear").
+Temperature Data:
+main: Contains temperature data.
+temp: Current temperature in Celsius.
+feels_like: Perceived temperature in Celsius.
+Timestamp:
+dt: Unix timestamp of the last update.
+
