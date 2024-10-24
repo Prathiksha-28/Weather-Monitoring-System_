@@ -1,0 +1,70 @@
+## 1. Data Retrieval
+def fetch_weather_data(city):
+    api_key = 'your_api_key'
+    url = f"http://api.openweathermap.org/data/2.5/weather?q={city}&appid={api_key}&units=metric"
+    response = requests.get(url)
+    return response.json()
+
+## 2. Data Processing
+def process_weather_data(data):
+    return {
+        'temp': data['main']['temp'],
+        'feels_like': data['main']['feels_like'],
+        'humidity': data['main']['humidity'],
+        'wind_speed': data['wind']['speed'],
+        'pressure': data['main']['pressure'],
+        'weather': data['weather'][0]['main']
+    }
+
+## Daily Weather Summary
+def calculate_daily_summary(daily_data):
+    if not daily_data:
+        return None
+
+    total_temp = 0
+    total_humidity = 0
+    total_wind_speed = 0
+    max_temp = float('-inf')
+    min_temp = float('inf')
+    conditions_count = {}
+
+    for entry in daily_data:
+        temp = entry['temp']
+        humidity = entry['humidity']
+        wind_speed = entry['wind_speed']
+        weather_condition = entry['weather']
+        
+        total_temp += temp
+        total_humidity += humidity
+        total_wind_speed += wind_speed
+
+        max_temp = max(max_temp, temp)
+        min_temp = min(min_temp, temp)
+
+        conditions_count[weather_condition] = conditions_count.get(weather_condition, 0) + 1
+
+    avg_temp = total_temp / len(daily_data)
+    avg_humidity = total_humidity / len(daily_data)
+    avg_wind_speed = total_wind_speed / len(daily_data)
+    dominant_condition = max(conditions_count, key=conditions_count.get)
+
+    return {
+        'average_temperature': avg_temp,
+        'average_humidity': avg_humidity,
+        'average_wind_speed': avg_wind_speed,
+        'max_temperature': max_temp,
+        'min_temperature': min_temp,
+        'dominant_condition': dominant_condition
+    }
+## Alerting Threshold
+def check_alerts(current_humidity, humidity_threshold, current_wind_speed, wind_speed_threshold):
+    alert_messages = []
+    
+    if current_humidity > humidity_threshold:
+        alert_messages.append(f"Alert! Humidity exceeds {humidity_threshold}%: Current humidity is {current_humidity}%.")
+    
+    if current_wind_speed > wind_speed_threshold:
+        alert_messages.append(f"Alert! Wind speed exceeds {wind_speed_threshold} m/s: Current wind speed is {current_wind_speed} m/s.")
+    
+    return alert_messages if alert_messages else None
+
