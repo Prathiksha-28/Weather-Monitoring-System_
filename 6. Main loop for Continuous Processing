@@ -1,0 +1,15 @@
+while True:
+    for city in CITIES:
+        data = fetch_weather_data(city)
+        process_weather_data(data)
+    
+    daily_summary = calculate_daily_summary()
+    
+    if daily_summary:
+        print(daily_summary)
+    
+    # Check alerts for the last city's temperature
+    check_alerts(daily_data[-1]['temp'])
+    
+    # Reset daily data at the end of the day
+    time.sleep(300)  # Wait for 5 minutes before fetching again
