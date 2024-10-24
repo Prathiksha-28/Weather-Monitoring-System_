@@ -1,0 +1,7 @@
+thresholds = {
+    'temperature': 35,
+}
+
+def check_alerts(current_temp):
+    if current_temp > thresholds['temperature']:
+        print(f"Alert! Temperature exceeds {thresholds['temperature']}°C: Current temperature is {current_temp}°C.")
