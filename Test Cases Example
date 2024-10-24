@@ -1,0 +1,65 @@
+import unittest
+from unittest.mock import patch
+
+# Assuming functions are defined in 'weather_module'
+from weather_module import (
+    fetch_weather_data,
+    process_weather_data,
+    calculate_daily_summary,
+    check_alerts
+)
+
+class TestWeatherMonitoringSystem(unittest.TestCase):
+    
+    def setUp(self):
+        # Sample data for tests
+        self.valid_city_data = {
+            'main': {'temp': 300, 'feels_like': 302},
+            'weather': [{'main': 'Clear'}],
+            'dt': 1633065600  # Example timestamp
+        }
+        self.daily_data = [
+            {'temp': 30, 'weather': 'Clear'},
+            {'temp': 32, 'weather': 'Clear'},
+            {'temp': 31, 'weather': 'Rain'},
+            {'temp': 34, 'weather': 'Clear'},
+            {'temp': 28, 'weather': 'Cloudy'}
+        ]
+
+    @patch('weather_module.requests.get')
+    def test_fetch_weather_data_valid_city(self, mock_get):
+        mock_get.return_value.json.return_value = self.valid_city_data
+        data = fetch_weather_data("Delhi")
+        self.assertEqual(data['main']['temp'], 300)
+
+    @patch('weather_module.requests.get')
+    def test_fetch_weather_data_invalid_city(self, mock_get):
+        mock_get.return_value.json.return_value = {'cod': '404', 'message': 'city not found'}
+        data = fetch_weather_data("InvalidCity")
+        self.assertIn('city not found', data['message'])
+
+    def test_process_weather_data(self):
+        processed_data = process_weather_data(self.valid_city_data)
+        self.assertEqual(processed_data['temp'], 300)
+
+    def test_calculate_daily_summary(self):
+        summary = calculate_daily_summary(self.daily_data)
+        self.assertAlmostEqual(summary['average_temperature'], 31.0)
+        self.assertEqual(summary['max_temperature'], 34)
+        self.assertEqual(summary['min_temperature'], 28)
+        self.assertEqual(summary['dominant_condition'], 'Clear')
+
+    def test_calculate_daily_summary_empty_data(self):
+        summary = calculate_daily_summary([])
+        self.assertIsNone(summary)
+
+    def test_alert_triggered(self):
+        alert_message = check_alerts(36, 35)  # Exceeds threshold
+        self.assertEqual(alert_message, "Alert! Temperature exceeds 35°C: Current temperature is 36°C.")
+
+    def test_no_alert_triggered(self):
+        alert_message = check_alerts(34, 35)  # Below threshold
+        self.assertIsNone(alert_message)
+
+if __name__ == '__main__':
+    unittest.main()
