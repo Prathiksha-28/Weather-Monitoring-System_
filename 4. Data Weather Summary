@@ -1,0 +1,41 @@
+daily_data = []
+
+def process_weather_data(data):
+    global daily_data
+    temp = data['main']['temp']
+    feels_like = data['main']['feels_like']
+    weather_condition = data['weather'][0]['main']
+    timestamp = data['dt']
+    
+    daily_data.append({
+        'temp': temp,
+        'feels_like': feels_like,
+        'weather': weather_condition,
+        'timestamp': timestamp
+    })
+
+def calculate_daily_summary():
+    if not daily_data:
+        return None
+
+    avg_temp = sum(entry['temp'] for entry in daily_data) / len(daily_data)
+    max_temp = max(entry['temp'] for entry in daily_data)
+    min_temp = min(entry['temp'] for entry in daily_data)
+    
+    # Dominant weather condition
+    conditions_count = {}
+    for entry in daily_data:
+        condition = entry['weather']
+        if condition in conditions_count:
+            conditions_count[condition] += 1
+        else:
+            conditions_count[condition] = 1
+    
+    dominant_condition = max(conditions_count, key=conditions_count.get)
+
+    return {
+        'average_temperature': avg_temp,
+        'max_temperature': max_temp,
+        'min_temperature': min_temp,
+        'dominant_condition': dominant_condition
+    }
