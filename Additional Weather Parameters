@@ -16,7 +16,7 @@ def process_weather_data(data):
         'weather': data['weather'][0]['main']
     }
 
-## Daily Weather Summary
+## 3.Daily Weather Summary
 def calculate_daily_summary(daily_data):
     if not daily_data:
         return None
@@ -56,7 +56,8 @@ def calculate_daily_summary(daily_data):
         'min_temperature': min_temp,
         'dominant_condition': dominant_condition
     }
-## Alerting Threshold
+
+## 4. Alerting Threshold
 def check_alerts(current_humidity, humidity_threshold, current_wind_speed, wind_speed_threshold):
     alert_messages = []
     
