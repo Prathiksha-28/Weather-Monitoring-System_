@@ -1,0 +1,16 @@
+weather-monitoring-system/
+├── src/
+│   ├── main.py                # Main application logic
+│   ├── data_retrieval.py      # API calls and data parsing
+│   ├── processing.py           # Temperature conversion and summary calculations
+│   ├── storage.py              # Database interactions
+│   ├── alerting.py             # Alerting mechanisms
+│   ├── visualization.py         # Visualization functions
+├── tests/
+│   ├── test_data_retrieval.py  # Unit tests for data retrieval
+│   ├── test_processing.py       # Unit tests for processing logic
+│   ├── test_alerting.py         # Unit tests for alerting
+├── Dockerfile                   # Docker configuration
+├── requirements.txt             # Python dependencies
+├── README.md                    # Project documentation
+└── .gitignore                   # Files to ignore in Git
