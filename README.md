@@ -23,8 +23,8 @@ This project is a real-time data processing system that monitors weather conditi
    git clone https://github.com/yourusername/weather-monitoring-system.git
    cd weather-monitoring-system
    
- 2.**Build the Docker container:**
-    ```bash
+2.**Build the Docker container:**
+   ```bash
     docker build -t weather-monitor .
 
 3. **Run the container:**
@@ -39,10 +39,10 @@ Set the environment variable OPENWEATHER_API_KEY with your OpenWeatherMap API ke
 2.SQLite Database: Chosen for its simplicity and lightweight nature to store daily summaries.
 
 ### Dependencies
-sqlite3: For database interactions.
-requests: For making API calls.
-matplotlib: For visualizations.
-Flask: For web interface (if applicable).
+-sqlite3: For database interactions.
+-requests: For making API calls.
+-matplotlib: For visualizations.
+-Flask: For web interface (if applicable).
 
 ### Usage
 Access the application at http://localhost:8080 to view daily summaries and alerts.
