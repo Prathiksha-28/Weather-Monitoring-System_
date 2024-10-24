@@ -23,7 +23,7 @@ This project is a real-time data processing system that monitors weather conditi
    git clone https://github.com/yourusername/weather-monitoring-system.git
    cd weather-monitoring-system
    
-2.**Build the Docker container:**
+2. **Build the Docker container:**
    ```bash
     docker build -t weather-monitor .
 
