@@ -1,0 +1,84 @@
+## 1. Data Retrieval
+def fetch_weather_forecast(city):
+    api_key = 'your_api_key'  # Replace with your actual API key
+    url = f"http://api.openweathermap.org/data/2.5/forecast?q={city}&appid={api_key}&units=metric"
+    response = requests.get(url)
+    return response.json()
+
+## 2. Data Processing
+def process_forecast_data(data):
+    forecast_data = []
+    for entry in data['list']:
+        forecast_data.append({
+            'temp': entry['main']['temp'],
+            'feels_like': entry['main']['feels_like'],
+            'humidity': entry['main']['humidity'],
+            'wind_speed': entry['wind']['speed'],
+            'pressure': entry['main']['pressure'],
+            'visibility': entry.get('visibility', None),
+            'cloudiness': entry['clouds']['all'],
+            'weather': entry['weather'][0]['main'],
+            'dt': entry['dt']  # Unix timestamp for each forecast
+        })
+    return forecast_data
+
+## 3. Daily Weather Summary
+def calculate_forecast_summary(forecast_data):
+    daily_summary = {}
+    
+    for entry in forecast_data:
+        date = entry['dt'] // 86400  # Convert Unix timestamp to day
+        if date not in daily_summary:
+            daily_summary[date] = {
+                'temps': [],
+                'humidities': [],
+                'wind_speeds': [],
+                'pressures': [],
+                'conditions': []
+            }
+
+        daily_summary[date]['temps'].append(entry['temp'])
+        daily_summary[date]['humidities'].append(entry['humidity'])
+        daily_summary[date]['wind_speeds'].append(entry['wind_speed'])
+        daily_summary[date]['pressures'].append(entry['pressure'])
+        daily_summary[date]['conditions'].append(entry['weather'])
+    
+    # Calculate daily averages
+    for day in daily_summary:
+        daily_summary[day]['average_temp'] = sum(daily_summary[day]['temps']) / len(daily_summary[day]['temps'])
+        daily_summary[day]['average_humidity'] = sum(daily_summary[day]['humidities']) / len(daily_summary[day]['humidities'])
+        daily_summary[day]['average_wind_speed'] = sum(daily_summary[day]['wind_speeds']) / len(daily_summary[day]['wind_speeds'])
+        daily_summary[day]['average_pressure'] = sum(daily_summary[day]['pressures']) / len(daily_summary[day]['pressures'])
+        daily_summary[day]['dominant_condition'] = max(set(daily_summary[day]['conditions']), key=daily_summary[day]['conditions'].count)
+
+    return daily_summary
+
+## 4. Alerting Threshold
+def check_forecast_alerts(forecast_data, humidity_threshold, wind_speed_threshold):
+    alert_messages = []
+    
+    for entry in forecast_data:
+        if entry['humidity'] > humidity_threshold:
+            alert_messages.append(f"Forecast Alert! Humidity exceeds {humidity_threshold}% on {entry['dt']}: Current humidity is {entry['humidity']}%.")
+        
+        if entry['wind_speed'] > wind_speed_threshold:
+            alert_messages.append(f"Forecast Alert! Wind speed exceeds {wind_speed_threshold} m/s on {entry['dt']}: Current wind speed is {entry['wind_speed']} m/s.")
+    
+    return alert_messages if alert_messages else None
+
+## 5. Visualization
+def plot_forecast_summary(forecast_summary):
+    days = list(forecast_summary.keys())
+    avg_temps = [summary['average_temp'] for summary in forecast_summary.values()]
+    avg_humidities = [summary['average_humidity'] for summary in forecast_summary.values()]
+    
+    plt.figure(figsize=(10, 6))
+    plt.plot(days, avg_temps, label='Average Temperature (°C)', color='orange', marker='o')
+    plt.plot(days, avg_humidities, label='Average Humidity (%)', color='blue', marker='o')
+    plt.xlabel('Days')
+    plt.ylabel('Values')
+    plt.title('Weather Forecast Summary')
+    plt.legend()
+    plt.xticks(rotation=45)
+    plt.tight_layout()
+    plt.show()
